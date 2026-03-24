@@ -49,40 +49,19 @@
     letter-spacing: 0.1em;
   }
 
-
-
-  /* 日本語の文節途中での不自然な改行を防ぐ */
-  .text-lock {
-    word-break: keep-all;
-    overflow-wrap: anywhere;
-    margin: 0 auto;
-  }
-
-  /* PC環境（769px以上）：テキスト幅を固定し、意図した<br>のみで改行させる */
-  @media (min-width: 769px) {
-    .text-lock.hero-lock { width: 700px; }
-    .text-lock.lead-lock { width: 800px; }
-    
-    .br-sp { display: none; } /* スマホ用の改行を無効化 */
-    .br-pc { display: block; } /* PC用の改行を有効化 */
-  }
-
-  /* スマホ・タブレット環境（768px以下）：スマホ画面に最適化した幅と改行に切り替え */
-  @media (max-width: 768px) {
-    .text-lock { width: 92%; } /* 画面幅に対して一定の余白を担保 */
-    
-    .br-pc { display: none; } /* PC用の改行を無効化 */
-    .br-sp { display: block; } /* スマホ用の改行を有効化 */
-
-    /* スマホ時のフォントサイズ微調整 */
-    .hero h1 { font-size: 1.8rem; line-height: 1.5; }
-    .lead h2 { font-size: 1.5rem; line-height: 1.5; }
-  }
-
+  /* =========================================
+     ファーストビュー（hero）のレイアウト制御
+  ========================================= */
   .hero {
     padding: 100px 0 80px;
-    text-align: center;
     background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+  }
+
+  /* ここがキモ：ブロックを文字幅に合わせ、中央配置し、中身を左詰めにする */
+  .hero-lock {
+    width: fit-content; /* h1かpの長い方の幅にブロックサイズを合わせる */
+    margin: 0 auto;     /* そのブロック全体を画面の中央に配置 */
+    text-align: left;   /* 中の文字はすべて左詰めにし、縦のラインを揃える */
   }
 
   .hero h1 {
@@ -95,23 +74,23 @@
   .hero p {
     font-size: 1.1rem;
     color: var(--text-light);
-    /* 以下を変更・追加 */
-    text-align: left;       /* 中の文字を左詰めに指定 */
-    width: fit-content;     /* ブロックの幅を文章の長さにぴったり合わせる */
-    margin: 0 auto;         /* そのブロック自体を画面の中央に配置 */
     line-height: 1.8;
   }
 
+  .comma-pc { display: inline; } /* PCでは読点を表示 */
+
+
+  /* =========================================
+     リード文（lead）のレイアウト制御
+  ========================================= */
   .lead {
     padding: 80px 0;
     background: #fff;
   }
 
-  
   .lead h2 { 
     font-size: 2rem; 
     margin-bottom: 30px; 
-    /* 左詰めデザインに合わせて、見出しに左線（アクセント）を追加して引き締める */
     border-left: 5px solid var(--accent-color);
     padding-left: 15px;
     line-height: 1.3;
@@ -119,21 +98,20 @@
 
   .lead p { 
     font-size: 1.05rem; 
-    line-height: 2; /* 左詰めは行間（line-height）を少し広げた方が読みやすい */
+    line-height: 2; 
     color: var(--text-main);
   }
 
-
-  /* ブロック自体は中央に、中のテキストは左詰めに */
   .text-lock.lead-lock {
-    text-align: left; /* 左詰めに指定 */
-    max-width: 720px; /* 左詰めの場合、視線移動を最適化するため幅を少し絞る（約40〜45文字幅） */
+    text-align: left;
+    max-width: 720px;
     width: 90%;
     margin: 0 auto;
   }
 
-
-  /* 1カラム用の縦積みスタックレイアウトに変更 */
+  /* =========================================
+     安心宣言（declarations）のカードレイアウト
+  ========================================= */
   .declarations {
     padding: 80px 0;
   }
@@ -148,64 +126,48 @@
     display: flex;
     flex-direction: column;
     gap: 40px;
-    max-width: 760px; /* PCでも読みやすい文字数幅に制限 */
+    max-width: 760px;
     margin: 0 auto;
   }
 
- 
-
-  /* 1. 巨大な背景透かし（watermark）の設定 */
   .card {
-    position: relative; /* 透かしの基準点 */
-    overflow: hidden;   /* 数字がカードからはみ出さないようにする */
+    position: relative;
+    overflow: hidden;
     background: #fff;
     padding: 40px 50px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 10px 15px rgba(0,0,0,0.03);
-    border-left: 6px solid var(--accent-color); /* 左側の青線 */
+    border-left: 6px solid var(--accent-color);
   }
 
-  /* HTMLのdata-num属性（"1", "2", "3"）を巨大な透かしとして表示 */
   .card::before {
-    content: attr(data-num); /* HTMLの属性値を吸い上げる */
+    content: attr(data-num);
     position: absolute;
-    top: -30px; /* 位置調整 */
+    top: -30px;
     right: -10px;
-    font-size: 10rem; /* 巨大な数字 */
-    font-weight: 900; /* 極太 */
-    font-family: 'Helvetica Neue', Arial, sans-serif; /* 数字は見やすいゴシックで */
-    color: rgba(37, 99, 235, 0.03); /* 極めて薄いブルー（重要：透かしにするため） */
+    font-size: 10rem;
+    font-weight: 900;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: rgba(37, 99, 235, 0.03);
     line-height: 1;
-    pointer-events: none; /* テキスト選択の邪魔にしない */
-    z-index: 1; /* コンテンツの後ろへ */
+    pointer-events: none;
+    z-index: 1;
   }
 
-  /* 2. カード内部のコンテンツ設定（透かしの上に重ねる） */
-  .card span, 
-  .card h3, 
-  .card p {
-    position: relative; /* 透かし（z-index:1）より前に出すため */
+  .card span, .card h3, .card p {
+    position: relative;
     z-index: 2;
   }
 
-  /* 3. ご要望の箇所：.card-number（「オリジナル」等）のスタイル */
   .card-number {
     display: inline-block;
     font-size: 0.95rem;
-    letter-spacing: 0.15em; /* 文字間隔を広げて少し硬い印象に */
+    letter-spacing: 0.15em;
     margin-bottom: 15px;
-
-    /* --- ここで太さと色を指定 --- */
-    font-weight: bold; /* 太くする */
-    color: var(--accent-color); /* 色をアクセントカラー（青）にする */
-    /* ※もし真っ黒が良い場合は #000、紺色が良い場合は var(--primary-color) に変更してください */
+    font-weight: bold;
+    color: var(--accent-color);
   }
 
-  
-
-
-
-  /* 4. 見出し（h3）と本文（p）の微調整 */
   .card h3 {
     font-size: 1.4rem;
     line-height: 1.5;
@@ -227,24 +189,30 @@
     font-size: 0.9rem;
   }
 
- 
-  /* スマホ対応の調整 */
-  @media (max-width: 768px) {
-    .lead h2 { font-size: 1.5rem; padding-left: 10px; }
+  /* =========================================
+     レスポンシブ（PC・スマホの改行・サイズ制御）
+  ========================================= */
+  @media (min-width: 769px) {
+    .br-sp { display: none; }
+    .br-pc { display: block; }
   }
+
+  @media (max-width: 768px) {
+    .br-pc { display: none; }
+    .br-sp { display: block; }
+
+    /* スマホで読点を消す */
+    .comma-pc { display: none; }
+
+    /* スマホ用のフォントサイズ・余白調整 */
+    .hero h1 { font-size: 1.8rem; line-height: 1.5; }
+    .hero p { font-size: 1rem; }
+    .lead h2 { font-size: 1.5rem; padding-left: 10px; }
+    
     .card { padding: 30px 20px; }
-    .card::before { font-size: 7rem; top: -10px; } /* 透かしを少し小さく */
+    .card::before { font-size: 7rem; top: -10px; }
     .card h3 { font-size: 1.2rem; }
-  .hero p {
-      width: 90%;          /* スマホでは横幅に余裕を持たせる */
-      max-width: 320px;    /* 読みやすい文字数で折り返させる */
-    }
-  
-
-
-
-
-
+  }
 </style>
 </head>
 <body>
@@ -256,7 +224,7 @@
 <section class="hero">
   <div class="container">
     <div class="text-lock hero-lock">
-      <h1>Webページ・SNS動画を、<br class="br-pc">適正価格で、より早く。</h1>
+      <h1>Webページ・SNS動画を<span class="comma-pc">、</span><br class="br-pc"><br class="br-sp">適正価格で<span class="comma-pc">、</span><br class="br-sp">より早く。</h1>
       <p>最新のテクノロジーを活用し、<br class="br-sp">地域企業様のビジュアルをサポートする<br class="br-sp">デザインパートナーです。</p>
     </div>
   </div>
@@ -291,7 +259,7 @@
       </div>
 
       <div class="card" data-num="3">
-        <span class="card-number" >品質保証</span>
+        <span class="card-number">品質保証</span>
         <h3>人間による徹底した品質保証</h3>
         <p>AIはあくまで「優秀なアシスタント」であり、ディレクションと最終決定権は人間が持ちます。</p>
       </div>
